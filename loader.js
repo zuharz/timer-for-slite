@@ -1,104 +1,104 @@
+/**
+ * Countdown Timer Loader for Slite
+ * This script handles the embedding of the timer in Slite documents
+ */
+
 (function() {
-  'use strict';
-
   // Configuration
-  const timerUrl = 'https://zuharz.github.io/timer-for-slite/';
-  const defaultDuration = 300; // 5 minutes default
+  const config = {
+    timerUrl: "https://zuharz.github.io/timer-for-slite/",
+    defaultDuration: 300 // 5 minutes in seconds
+  };
 
-  // Find all timer elements to initialize
+  /**
+   * Initialize all timer elements on the page
+   */
   function initTimers() {
-    const timerElements = document.querySelectorAll('.slite-timer');
+    // Find all timer elements
+    const timerElements = document.querySelectorAll(".slite-timer");
     
-    if (!timerElements || timerElements.length === 0) {
-      return;
-    }
-
-    timerElements.forEach(function(element) {
+    // Initialize each timer
+    timerElements.forEach(element => {
       createTimerIframe(element);
     });
   }
 
-  // Create an iframe for each timer
+  /**
+   * Create an iframe for a single timer element
+   * @param {HTMLElement} element - The container element
+   */
   function createTimerIframe(element) {
-    // Get custom settings if provided
-    const duration = element.getAttribute('data-duration') || defaultDuration;
+    // Get timer settings from element attributes
+    const duration = element.getAttribute("data-duration") || config.defaultDuration;
     
-    // Create iframe
-    const iframe = document.createElement('iframe');
-    iframe.frameBorder = '0';
-    iframe.scrolling = 'no';
-    iframe.allowTransparency = true;
-    iframe.style.width = '100%';
-    iframe.style.height = '100%';
-    iframe.style.position = 'absolute';
-    iframe.style.top = '0';
-    iframe.style.left = '0';
+    // Build URL with parameters
+    let timerSrc = `${config.timerUrl}?embed=true&duration=${duration}`;
     
-    // Set the source URL with parameters
-    iframe.src = `${timerUrl}?embed=true&duration=${duration}`;
+    // Create iframe element
+    const iframe = document.createElement("iframe");
+    iframe.setAttribute("src", timerSrc);
+    iframe.setAttribute("frameborder", "0");
+    iframe.setAttribute("scrolling", "no");
+    iframe.setAttribute("title", element.getAttribute("title") || "Countdown Timer");
+    iframe.style.position = "absolute";
+    iframe.style.top = "0";
+    iframe.style.left = "0";
+    iframe.style.width = "100%";
+    iframe.style.height = "100%";
+    iframe.style.border = "none";
+    iframe.style.borderRadius = "8px";
     
-    // Replace the link with the iframe
-    const container = document.createElement('div');
-    container.style.position = 'relative';
-    container.style.width = '100%';
-    container.style.height = '0';
-    container.style.paddingBottom = '25%';
-    container.style.overflow = 'hidden';
-    container.style.borderRadius = '8px';
-    container.style.boxShadow = '0 2px 10px rgba(0,0,0,0.1)';
+    // Add iframe to element
+    element.appendChild(iframe);
     
-    // Add optional title from the original element
-    if (element.title) {
-      const title = document.createElement('div');
-      title.textContent = element.title;
-      title.style.textAlign = 'center';
-      title.style.padding = '5px';
-      title.style.fontFamily = '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif';
-      title.style.fontSize = '14px';
-      title.style.color = '#333';
-      container.appendChild(title);
-    }
-    
-    container.appendChild(iframe);
-    
-    // Replace the element with our container
-    if (element.parentNode) {
-      element.parentNode.replaceChild(container, element);
-    }
+    // Set up message handling for communication with iframe
+    setupMessageHandling(iframe, element);
   }
 
-  // Handle iframe message events (for communications between iframe and parent)
-  function setupMessageHandling() {
-    window.addEventListener('message', function(event) {
-      // Verify source origin for security
-      if (event.origin !== timerUrl) {
-        return;
-      }
+  /**
+   * Set up message handling for timer communication
+   * @param {HTMLIFrameElement} iframe - The timer iframe
+   * @param {HTMLElement} element - The container element
+   */
+  function setupMessageHandling(iframe, element) {
+    window.addEventListener("message", function(event) {
+      // Only accept messages from our timer origin
+      if (event.origin !== new URL(config.timerUrl).origin) return;
       
-      // Handle messages from the timer iframe
       try {
+        // Parse the message data
         const data = JSON.parse(event.data);
-        if (data.type === 'timerComplete') {
-          console.log('Timer completed');
-          // You can add custom behavior here when timer completes
+        
+        // Handle timer completion
+        if (data.type === "timerComplete") {
+          element.dispatchEvent(new CustomEvent("timerComplete"));
+          
+          // Dispatch a DOM event that Slite can potentially listen for
+          const customEvent = new CustomEvent("sliteTimerComplete", {
+            bubbles: true,
+            detail: { element: element }
+          });
+          element.dispatchEvent(customEvent);
         }
       } catch (e) {
-        console.error('Error processing message from timer:', e);
+        console.error("Error processing timer message:", e);
       }
     });
   }
 
-  // Initialize when the DOM is ready
+  /**
+   * Initialize the timers when DOM is ready
+   */
   function init() {
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', initTimers);
+    // If DOM is already ready, initialize immediately
+    if (document.readyState === "complete" || document.readyState === "interactive") {
+      setTimeout(initTimers, 1);
     } else {
-      initTimers();
+      // Otherwise wait for DOM to be ready
+      document.addEventListener("DOMContentLoaded", initTimers);
     }
-    
-    setupMessageHandling();
   }
 
-  // Start initialization
+  // Initialize the loader
   init();
 })();

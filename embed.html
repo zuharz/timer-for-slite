@@ -55,32 +55,96 @@
     .show {
       opacity: 1;
     }
+    .tab {
+      overflow: hidden;
+      border: 1px solid #ccc;
+      background-color: #f1f1f1;
+      border-radius: 4px 4px 0 0;
+    }
+    .tab button {
+      background-color: inherit;
+      float: left;
+      border: none;
+      outline: none;
+      cursor: pointer;
+      padding: 14px 16px;
+      transition: 0.3s;
+      color: #333;
+      margin: 0;
+    }
+    .tab button:hover {
+      background-color: #ddd;
+    }
+    .tab button.active {
+      background-color: #4CAF50;
+      color: white;
+    }
+    .tabcontent {
+      display: none;
+      padding: 20px;
+      border: 1px solid #ccc;
+      border-top: none;
+      border-radius: 0 0 4px 4px;
+    }
+    .visible {
+      display: block;
+    }
   </style>
 </head>
 <body>
   <h1>How to Embed the Countdown Timer in Slite</h1>
   
-  <p>To embed this countdown timer in your Slite document, you can use the following code:</p>
+  <p>Based on Slite's embedding capabilities, here are different ways to embed this timer:</p>
   
-  <pre><code id="embedCode">&lt;script&gt;(function(d, s, id) { 
-  var js, pjs = d.getElementsByTagName(s)[0]; 
-  if (d.getElementById(id)) return; 
-  js = d.createElement(s); js.id = id; 
-  js.src = "https://zuharz.github.io/timer-for-slite/loader.js"; 
-  pjs.parentNode.insertBefore(js, pjs); 
-}(document, "script", "slite-timer-sdk"));&lt;/script&gt;
-&lt;a data-type="countdown" class="slite-timer" data-duration="300" style="display:block; width:100%; height:0; position:relative; padding-bottom:25%; margin:0 auto;" title="Countdown Timer" href="https://zuharz.github.io/timer-for-slite/"&gt;Countdown Timer&lt;/a&gt;</code></pre>
+  <div class="tab">
+    <button class="tablinks active" onclick="openOption(event, 'Option1')">Option 1: Direct Link</button>
+    <button class="tablinks" onclick="openOption(event, 'Option2')">Option 2: Slite-Compatible Embed</button>
+    <button class="tablinks" onclick="openOption(event, 'Option3')">Option 3: Standard iFrame</button>
+  </div>
   
-  <button onclick="copyEmbedCode()">Copy Embed Code</button>
-  <span id="copiedMessage" class="copied">Copied!</span>
+  <div id="Option1" class="tabcontent visible">
+    <h3>Option 1: Direct Link (Simplest)</h3>
+    <p>Simply paste this URL in your Slite document:</p>
+    <pre><code id="linkCode">https://zuharz.github.io/timer-for-slite/?duration=300</code></pre>
+    <button onclick="copyCode('linkCode')">Copy Link</button>
+    <span id="linkCodeCopied" class="copied">Copied!</span>
+    <p><strong>Note:</strong> You can customize the duration by changing the number after "duration=" (in seconds).</p>
+  </div>
+  
+  <div id="Option2" class="tabcontent">
+    <h3>Option 2: Slite-Compatible Embed (Recommended)</h3>
+    <p>This embed code uses the same structure as TickCounter in Slite:</p>
+    <pre><code id="sliteCode">&lt;div class="position-relative radius-large shadow-inset-primary-on-selected border-small border-shade-45"&gt;
+  &lt;div class="radius-large overflow-hidden"&gt;
+    &lt;div style="left: 0; width: 100%; height: 0; position: relative; padding-bottom: 25%;"&gt;
+      &lt;iframe src="https://zuharz.github.io/timer-for-slite/?embed=true&duration=300" 
+        style="top: 0px; left: 0px; width: 100%; height: 100%; position: absolute; border: 0px; background-color: var(--shade-50);" 
+        allowfullscreen=""&gt;&lt;/iframe&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</code></pre>
+    <button onclick="copyCode('sliteCode')">Copy Slite-Compatible Code</button>
+    <span id="sliteCodeCopied" class="copied">Copied!</span>
+  </div>
+  
+  <div id="Option3" class="tabcontent">
+    <h3>Option 3: Standard iFrame (Generic)</h3>
+    <p>For other platforms, use this standard iframe code:</p>
+    <pre><code id="iframeCode">&lt;iframe src="https://zuharz.github.io/timer-for-slite/?embed=true&duration=300" 
+       style="width: 100%; height: 150px; border: none; border-radius: 8px; 
+       box-shadow: 0 2px 10px rgba(0,0,0,0.1);" 
+       title="Countdown Timer"&gt;&lt;/iframe&gt;</code></pre>
+    <button onclick="copyCode('iframeCode')">Copy Standard iFrame</button>
+    <span id="iframeCodeCopied" class="copied">Copied!</span>
+  </div>
   
   <h2>Customization Options</h2>
   
-  <p>You can customize the timer by changing these attributes:</p>
+  <p>You can customize the timer by changing these parameters:</p>
   
   <ul>
-    <li><strong>data-duration</strong>: Set the duration in seconds (default: 300 = 5 minutes)</li>
-    <li><strong>title</strong>: Change the title displayed above the timer</li>
+    <li><strong>duration</strong>: Set the duration in seconds (default: 300 = 5 minutes)</li>
+    <li><strong>title</strong>: (For iframe embeds) Change the title displayed</li>
   </ul>
   
   <h2>Example</h2>
@@ -88,31 +152,29 @@
   <p>Here's how the timer will look when embedded:</p>
   
   <div class="demo">
-    <script>(function(d, s, id) { 
-      var js, pjs = d.getElementsByTagName(s)[0]; 
-      if (d.getElementById(id)) return; 
-      js = d.createElement(s); js.id = id; 
-      js.src = "./loader.js"; 
-      pjs.parentNode.insertBefore(js, pjs); 
-    }(document, "script", "slite-timer-sdk"));</script>
-    <a data-type="countdown" class="slite-timer" data-duration="30" style="display:block; width:100%; height:0; position:relative; padding-bottom:25%; margin:0 auto;" title="Example Timer (30 seconds)" href="https://zuharz.github.io/timer-for-slite/">Example Timer</a>
+    <div style="left: 0; width: 100%; height: 0; position: relative; padding-bottom: 25%;">
+      <iframe src="https://zuharz.github.io/timer-for-slite/?embed=true&duration=30" 
+         style="top: 0; left: 0; width: 100%; height: 100%; position: absolute; border: none; border-radius: 8px; 
+         box-shadow: 0 2px 10px rgba(0,0,0,0.1);" 
+         title="Example Timer (30 seconds)"></iframe>
+    </div>
   </div>
   
   <h2>Using in Slite</h2>
   
-  <p>To use this timer in Slite:</p>
+  <p>Follow these steps for embedding in Slite:</p>
   
   <ol>
-    <li>Copy the embed code above</li>
-    <li>In your Slite document, paste the URL: <code>https://zuharz.github.io/timer-for-slite/</code></li>
-    <li>Slite should recognize and embed the timer automatically</li>
+    <li>In your Slite document, paste the direct link (Option 1)</li>
+    <li>If Slite shows only a link, switch to HTML view or code block and paste the Slite-Compatible code (Option 2)</li>
+    <li>Save and view your document to see the embedded timer</li>
   </ol>
   
   <p>If you encounter any issues, please open an issue on the <a href="https://github.com/zuharz/timer-for-slite" target="_blank">GitHub repository</a>.</p>
 
   <script>
-    function copyEmbedCode() {
-      const codeElement = document.getElementById('embedCode');
+    function copyCode(elementId) {
+      const codeElement = document.getElementById(elementId);
       const textArea = document.createElement('textarea');
       textArea.value = codeElement.textContent;
       document.body.appendChild(textArea);
@@ -120,11 +182,28 @@
       document.execCommand('copy');
       document.body.removeChild(textArea);
       
-      const copiedMessage = document.getElementById('copiedMessage');
+      const copiedMessage = document.getElementById(elementId + 'Copied');
       copiedMessage.classList.add('show');
       setTimeout(() => {
         copiedMessage.classList.remove('show');
       }, 2000);
+    }
+    
+    function openOption(evt, optionName) {
+      var i, tabcontent, tablinks;
+      
+      tabcontent = document.getElementsByClassName("tabcontent");
+      for (i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].className = tabcontent[i].className.replace(" visible", "");
+      }
+      
+      tablinks = document.getElementsByClassName("tablinks");
+      for (i = 0; i < tablinks.length; i++) {
+        tablinks[i].className = tablinks[i].className.replace(" active", "");
+      }
+      
+      document.getElementById(optionName).className += " visible";
+      evt.currentTarget.className += " active";
     }
   </script>
 </body>
