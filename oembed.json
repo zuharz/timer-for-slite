@@ -1,0 +1,14 @@
+{
+  "version": "1.0",
+  "type": "rich",
+  "provider_name": "Countdown Timer for Slite",
+  "provider_url": "https://zuharz.github.io/timer-for-slite/",
+  "title": "Countdown Timer for Slite",
+  "author_name": "Sergejs Sušinskis",
+  "html": "<script>(function(d, s, id) { var js, pjs = d.getElementsByTagName(s)[0]; if (d.getElementById(id)) return; js = d.createElement(s); js.id = id; js.src = \"https://zuharz.github.io/timer-for-slite/loader.js\"; pjs.parentNode.insertBefore(js, pjs); }(document, \"script\", \"slite-timer-sdk\"));</script><a data-type=\"countdown\" class=\"slite-timer\" style=\"display:block; left:0; width:100%; height:0; position:relative; padding-bottom:25%; margin:0 auto;\" title=\"Countdown Timer\" href=\"https://zuharz.github.io/timer-for-slite/\">Countdown Timer</a>",
+  "width": 600,
+  "height": 150,
+  "thumbnail_url": "https://zuharz.github.io/timer-for-slite/timer-preview.png",
+  "thumbnail_width": 600,
+  "thumbnail_height": 150
+}

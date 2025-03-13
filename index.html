@@ -6,6 +6,13 @@
   <meta name="description" content="A simple countdown timer application for Slite">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>⏱️</text></svg>" type="image/svg+xml">
   <title>Countdown Timer for Slite</title>
+  <!-- oEmbed discovery links -->
+  <link href="oembed.json" rel="alternate" type="application/json+oembed" title="Countdown Timer">
+  <meta property="og:title" content="Countdown Timer for Slite">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://zuharz.github.io/timer-for-slite/">
+  <meta property="og:image" content="https://zuharz.github.io/timer-for-slite/timer-preview.png">
+  <meta property="og:description" content="A simple countdown timer application for Slite">
   <style>
     :root {
       --primary-font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
@@ -178,10 +185,52 @@
         flex-wrap: wrap;
       }
     }
+    
+    /* Embed-specific styles */
+    .embed-container {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .embed-responsive {
+      position: relative;
+      width: 100%;
+      height: 0;
+      padding-bottom: 25%;
+    }
+    
+    .embed-responsive .timer-container {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      max-width: none;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    
+    .embed-responsive #timerDisplay {
+      font-size: 3.5rem;
+      margin-bottom: 5px;
+    }
+    
+    .embed-responsive .labels {
+      gap: 4rem;
+      margin-bottom: 15px;
+    }
+    
+    .embed-responsive .controls,
+    .embed-responsive .inputs {
+      display: none;
+    }
   </style>
 </head>
 <body>
-  <main class="timer-container">
+  <main class="timer-container" id="timerApp">
     <div id="timerDisplay" role="timer" aria-live="polite">
       <span id="minutes">00</span>:<span id="seconds">00</span>
     </div>
@@ -342,57 +391,157 @@
       setTimer(); // Reset to input values instead of zero
     }
     
-    // Event listeners
-    btnStart.addEventListener('click', startTimer);
-    btnStop.addEventListener('click', stopTimer);
-    btnReset.addEventListener('click', resetTimer);
-    
-    // Auto-update when inputs change
-    hoursInput.addEventListener('change', setTimer);
-    minutesInput.addEventListener('change', setTimer);
-    secondsInput.addEventListener('change', setTimer);
-    
-    // Keyboard support for better accessibility
-    document.addEventListener('keydown', function(e) {
-      if (e.code === 'Space') {
-        if (timerInterval) {
-          stopTimer();
-        } else {
-          startTimer();
-        }
-        e.preventDefault();
-      } else if (e.code === 'KeyR') {
-        resetTimer();
-        e.preventDefault();
-      }
-    });
-    
-    // Initial setup
-    btnStop.disabled = true;
-    updateDisplay();
-    
-    // Make sure timer works correctly when tab is not active
-    let lastTime = Date.now();
-    
-    window.addEventListener('visibilitychange', function() {
-      if (document.visibilityState === 'visible' && timerInterval) {
-        // Calculate missed time while tab was inactive
-        const now = Date.now();
-        const elapsed = Math.floor((now - lastTime) / 1000);
+    /**
+     * Initialize the timer
+     */
+    function initTimer(duration) {
+      // Set initial time if provided
+      if (duration) {
+        const h = Math.floor(duration / 3600);
+        const m = Math.floor((duration % 3600) / 60);
+        const s = duration % 60;
         
-        if (elapsed > 0 && totalSeconds > 0) {
-          totalSeconds = Math.max(0, totalSeconds - elapsed);
-          updateDisplay();
-          
-          if (totalSeconds === 0) {
-            stopTimer();
-            notifyTimerComplete();
-          }
-        }
+        if (hoursInput) hoursInput.value = h;
+        if (minutesInput) minutesInput.value = m;
+        if (secondsInput) secondsInput.value = s;
+        
+        totalSeconds = duration;
       }
       
-      lastTime = Date.now();
-    });
+      updateDisplay();
+      
+      // Add event listeners
+      if (btnStart) btnStart.addEventListener('click', startTimer);
+      if (btnStop) btnStop.addEventListener('click', stopTimer);
+      if (btnReset) btnReset.addEventListener('click', resetTimer);
+      
+      // Auto-update when inputs change
+      if (hoursInput) hoursInput.addEventListener('change', setTimer);
+      if (minutesInput) minutesInput.addEventListener('change', setTimer);
+      if (secondsInput) secondsInput.addEventListener('change', setTimer);
+      
+      // Keyboard support for better accessibility
+      document.addEventListener('keydown', function(e) {
+        if (e.code === 'Space') {
+          if (timerInterval) {
+            stopTimer();
+          } else {
+            startTimer();
+          }
+          e.preventDefault();
+        } else if (e.code === 'KeyR') {
+          resetTimer();
+          e.preventDefault();
+        }
+      });
+      
+      // Initial setup
+      if (btnStop) btnStop.disabled = true;
+      
+      // Make sure timer works correctly when tab is not active
+      let lastTime = Date.now();
+      
+      window.addEventListener('visibilitychange', function() {
+        if (document.visibilityState === 'visible' && timerInterval) {
+          // Calculate missed time while tab was inactive
+          const now = Date.now();
+          const elapsed = Math.floor((now - lastTime) / 1000);
+          
+          if (elapsed > 0 && totalSeconds > 0) {
+            totalSeconds = Math.max(0, totalSeconds - elapsed);
+            updateDisplay();
+            
+            if (totalSeconds === 0) {
+              stopTimer();
+              notifyTimerComplete();
+            }
+          }
+        }
+        
+        lastTime = Date.now();
+      });
+    }
+    
+    // Start the timer with URL parameters if provided
+    window.onload = function() {
+      // Check for URL parameters
+      const urlParams = new URLSearchParams(window.location.search);
+      const isEmbed = urlParams.get('embed') === 'true';
+      const duration = parseInt(urlParams.get('duration')) || 5; // Default 5 seconds
+      
+      // Apply embed styling if needed
+      if (isEmbed) {
+        const timerApp = document.getElementById('timerApp');
+        if (timerApp) {
+          timerApp.classList.add('embed-responsive');
+        }
+        
+        // Auto-start the timer if in embed mode
+        initTimer(duration);
+        setTimeout(startTimer, 500); // Short delay before starting
+        
+        // Send messages to parent window
+        window.addEventListener('message', function(event) {
+          // Check origin for security
+          const allowedOrigins = ['https://app.slite.com', 'https://zuharz.github.io'];
+          if (!allowedOrigins.includes(event.origin)) {
+            return;
+          }
+          
+          // Handle commands from parent
+          try {
+            const data = JSON.parse(event.data);
+            if (data.action === 'start') {
+              startTimer();
+            } else if (data.action === 'stop') {
+              stopTimer();
+            } else if (data.action === 'reset') {
+              resetTimer();
+            } else if (data.action === 'setDuration' && data.value) {
+              sliteTimer.setDuration(parseInt(data.value));
+            }
+          } catch (e) {
+            console.error('Error processing message:', e);
+          }
+        });
+      } else {
+        // Regular initialization for standalone page
+        initTimer();
+      }
+    };
+    
+    // Create a global interface for the timer
+    window.sliteTimer = {
+      init: initTimer,
+      start: startTimer,
+      stop: stopTimer,
+      reset: resetTimer,
+      setDuration: function(seconds) {
+        totalSeconds = seconds;
+        updateDisplay();
+      },
+      // Add method to notify parent window when timer completes
+      notifyComplete: function() {
+        try {
+          if (window.parent !== window) {
+            window.parent.postMessage(JSON.stringify({
+              type: 'timerComplete'
+            }), '*');
+          }
+        } catch (e) {
+          console.error('Error sending completion message:', e);
+        }
+      }
+    };
+    
+    // Override the notifyTimerComplete function to notify parent window
+    const originalNotifyTimerComplete = notifyTimerComplete;
+    notifyTimerComplete = function() {
+      originalNotifyTimerComplete();
+      sliteTimer.notifyComplete();
+    };
   </script>
+  
+  <!-- Embed detection script moved to main script -->
 </body>
 </html>
