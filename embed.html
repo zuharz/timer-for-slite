@@ -97,27 +97,36 @@
   <p>Based on Slite's embedding capabilities, here are different ways to embed this timer:</p>
   
   <div class="tab">
-    <button class="tablinks active" onclick="openOption(event, 'Option1')">Option 1: Widget URL</button>
-    <button class="tablinks" onclick="openOption(event, 'Option2')">Option 2: Slite-Compatible Embed</button>
-    <button class="tablinks" onclick="openOption(event, 'Option3')">Option 3: Standard iFrame</button>
+    <button class="tablinks active" onclick="openOption(event, 'Option1')">Option 1: ID-Based URL</button>
+    <button class="tablinks" onclick="openOption(event, 'Option2')">Option 2: Widget URL</button>
+    <button class="tablinks" onclick="openOption(event, 'Option3')">Option 3: Slite-Compatible Code</button>
   </div>
   
   <div id="Option1" class="tabcontent visible">
-    <h3>Option 1: Widget URL (Recommended)</h3>
+    <h3>Option 1: ID-Based URL (Recommended)</h3>
     <p>Simply paste this URL in your Slite document for best compatibility:</p>
+    <pre><code id="idCode">https://zuharz.github.io/timer-for-slite/widget/countdown/1234</code></pre>
+    <button onclick="copyCode('idCode')">Copy ID URL</button>
+    <span id="idCodeCopied" class="copied">Copied!</span>
+    <p><strong>Note:</strong> This format matches exactly how TickCounter embeds timers in Slite.</p>
+  </div>
+  
+  <div id="Option2" class="tabcontent">
+    <h3>Option 2: Widget URL (Parameter-based)</h3>
+    <p>Use this URL to customize the timer directly:</p>
     <pre><code id="widgetCode">https://zuharz.github.io/timer-for-slite/widget/countdown/?duration=300&title=My%20countdown</code></pre>
     <button onclick="copyCode('widgetCode')">Copy Widget URL</button>
     <span id="widgetCodeCopied" class="copied">Copied!</span>
     <p><strong>Customize:</strong> Change the number after "duration=" (in seconds) and add your own title after "title=".</p>
   </div>
   
-  <div id="Option2" class="tabcontent">
-    <h3>Option 2: Slite-Compatible Embed</h3>
-    <p>This embed code uses the same structure as TickCounter in Slite:</p>
+  <div id="Option3" class="tabcontent">
+    <h3>Option 3: Slite-Compatible Embed Code</h3>
+    <p>If direct links don't work, paste this HTML code:</p>
     <pre><code id="sliteCode">&lt;div class="position-relative radius-large shadow-inset-primary-on-selected border-small border-shade-45"&gt;
   &lt;div class="radius-large overflow-hidden"&gt;
     &lt;div style="left: 0; width: 100%; height: 0; position: relative; padding-bottom: 25%;"&gt;
-      &lt;iframe src="https://zuharz.github.io/timer-for-slite/widget/countdown/?duration=300&title=My%20countdown" 
+      &lt;iframe src="https://zuharz.github.io/timer-for-slite/widget/countdown/1234" 
         style="top: 0px; left: 0px; width: 100%; height: 100%; position: absolute; border: 0px; background-color: var(--shade-50);" 
         allowfullscreen=""&gt;&lt;/iframe&gt;
     &lt;/div&gt;
@@ -125,17 +134,6 @@
 &lt;/div&gt;</code></pre>
     <button onclick="copyCode('sliteCode')">Copy Slite-Compatible Code</button>
     <span id="sliteCodeCopied" class="copied">Copied!</span>
-  </div>
-  
-  <div id="Option3" class="tabcontent">
-    <h3>Option 3: Standard iFrame (Generic)</h3>
-    <p>For other platforms, use this standard iframe code:</p>
-    <pre><code id="iframeCode">&lt;iframe src="https://zuharz.github.io/timer-for-slite/widget/countdown/?duration=300&title=My%20countdown" 
-       style="width: 100%; height: 150px; border: none; border-radius: 8px; 
-       box-shadow: 0 2px 10px rgba(0,0,0,0.1);" 
-       title="Countdown Timer"&gt;&lt;/iframe&gt;</code></pre>
-    <button onclick="copyCode('iframeCode')">Copy Standard iFrame</button>
-    <span id="iframeCodeCopied" class="copied">Copied!</span>
   </div>
   
   <h2>Customization Options</h2>
@@ -153,10 +151,10 @@
   
   <div class="demo">
     <div style="left: 0; width: 100%; height: 0; position: relative; padding-bottom: 25%;">
-      <iframe src="https://zuharz.github.io/timer-for-slite/widget/countdown/?duration=30&title=Example%20Timer" 
+      <iframe src="https://zuharz.github.io/timer-for-slite/widget/countdown/1234" 
          style="top: 0; left: 0; width: 100%; height: 100%; position: absolute; border: none; border-radius: 8px; 
          box-shadow: 0 2px 10px rgba(0,0,0,0.1);" 
-         title="Example Timer (30 seconds)"></iframe>
+         title="Example Timer"></iframe>
     </div>
   </div>
   
@@ -165,9 +163,9 @@
   <p>Follow these steps for embedding in Slite:</p>
   
   <ol>
-    <li>In your Slite document, paste the Widget URL (Option 1)</li>
+    <li>In your Slite document, simply paste the ID-Based URL (Option 1)</li>
     <li>Slite should automatically recognize and embed the timer as it does with TickCounter</li>
-    <li>If it doesn't work, try using the Slite-Compatible embed code (Option 2)</li>
+    <li>If needed, you can create multiple timers by using different IDs</li>
   </ol>
   
   <p>If you encounter any issues, please open an issue on the <a href="https://github.com/zuharz/timer-for-slite" target="_blank">GitHub repository</a>.</p>
