@@ -3,8 +3,31 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Countdown Timer</title>
+  <meta name="description" content="A simple countdown timer application for Slite">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>⏱️</text></svg>" type="image/svg+xml">
+  <title>Countdown Timer for Slite</title>
   <style>
+    :root {
+      --primary-font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+      --primary-bg: #f8f9fa;
+      --timer-bg: #ffffff;
+      --text-color: #333;
+      --text-dark: #212529;
+      --text-muted: #6c757d;
+      --border-light: #dee2e6;
+      --border-divider: #f0f0f0;
+      --start-btn-bg: #d4edda;
+      --start-btn-border: #c3e6cb;
+      --start-btn-text: #155724;
+      --stop-btn-bg: #f8d7da;
+      --stop-btn-border: #f5c6cb;
+      --stop-btn-text: #721c24;
+      --reset-btn-bg: #e2e3e5;
+      --reset-btn-border: #d6d8db;
+      --reset-btn-text: #383d41;
+      --focus-shadow: rgba(0,123,255,.25);
+    }
+    
     * {
       box-sizing: border-box;
       margin: 0;
@@ -12,10 +35,10 @@
     }
     
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+      font-family: var(--primary-font);
       text-align: center;
-      color: #333;
-      background-color: #f8f9fa;
+      color: var(--text-color);
+      background-color: var(--primary-bg);
       padding: 20px;
       display: flex;
       justify-content: center;
@@ -24,7 +47,7 @@
     }
     
     .timer-container {
-      background-color: white;
+      background-color: var(--timer-bg);
       border-radius: 8px;
       box-shadow: 0 2px 10px rgba(0,0,0,0.1);
       padding: 25px;
@@ -36,7 +59,7 @@
       font-size: 5rem;
       font-weight: 300;
       margin-bottom: 15px;
-      color: #212529;
+      color: var(--text-dark);
     }
     
     .labels {
@@ -45,7 +68,7 @@
       gap: 6.5rem;
       font-size: 0.9rem;
       margin-bottom: 25px;
-      color: #6c757d;
+      color: var(--text-muted);
       text-transform: uppercase;
       font-weight: 500;
     }
@@ -59,8 +82,8 @@
       padding: 8px 16px;
       margin: 0 5px;
       border-radius: 4px;
-      border: 1px solid #dee2e6;
-      background-color: #f8f9fa;
+      border: 1px solid var(--border-light);
+      background-color: var(--primary-bg);
       cursor: pointer;
       transition: all 0.2s;
       min-width: 80px;
@@ -71,7 +94,7 @@
     }
     
     .btn:active {
-      background-color: #dee2e6;
+      background-color: var(--border-light);
     }
     
     .btn:disabled {
@@ -80,33 +103,33 @@
     }
     
     #btnStart {
-      background-color: #d4edda;
-      border-color: #c3e6cb;
-      color: #155724;
+      background-color: var(--start-btn-bg);
+      border-color: var(--start-btn-border);
+      color: var(--start-btn-text);
     }
     
     #btnStart:hover {
-      background-color: #c3e6cb;
+      background-color: var(--start-btn-border);
     }
     
     #btnStop {
-      background-color: #f8d7da;
-      border-color: #f5c6cb;
-      color: #721c24;
+      background-color: var(--stop-btn-bg);
+      border-color: var(--stop-btn-border);
+      color: var(--stop-btn-text);
     }
     
     #btnStop:hover {
-      background-color: #f5c6cb;
+      background-color: var(--stop-btn-border);
     }
     
     #btnReset {
-      background-color: #e2e3e5;
-      border-color: #d6d8db;
-      color: #383d41;
+      background-color: var(--reset-btn-bg);
+      border-color: var(--reset-btn-border);
+      color: var(--reset-btn-text);
     }
     
     #btnReset:hover {
-      background-color: #d6d8db;
+      background-color: var(--reset-btn-border);
     }
     
     .inputs {
@@ -115,7 +138,7 @@
       gap: 15px;
       margin-top: 20px;
       padding-top: 20px;
-      border-top: 1px solid #f0f0f0;
+      border-top: 1px solid var(--border-divider);
     }
     
     .inputs label {
@@ -124,14 +147,14 @@
       align-items: center;
       gap: 5px;
       font-size: 0.8rem;
-      color: #6c757d;
+      color: var(--text-muted);
     }
     
     .inputs input {
       width: 55px;
       padding: 8px 4px;
       text-align: center;
-      border: 1px solid #ced4da;
+      border: 1px solid var(--border-light);
       border-radius: 4px;
       font-size: 1rem;
     }
@@ -139,7 +162,7 @@
     .inputs input:focus {
       outline: none;
       border-color: #80bdff;
-      box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+      box-shadow: 0 0 0 0.2rem var(--focus-shadow);
     }
     
     @media (max-width: 480px) {
@@ -158,8 +181,8 @@
   </style>
 </head>
 <body>
-  <div class="timer-container">
-    <div id="timerDisplay">
+  <main class="timer-container">
+    <div id="timerDisplay" role="timer" aria-live="polite">
       <span id="minutes">00</span>:<span id="seconds">00</span>
     </div>
     
@@ -169,26 +192,26 @@
     </div>
     
     <div class="controls">
-      <button id="btnStart" class="btn">START</button>
-      <button id="btnStop" class="btn">STOP</button>
-      <button id="btnReset" class="btn">RESET</button>
+      <button id="btnStart" class="btn" aria-label="Start timer">START</button>
+      <button id="btnStop" class="btn" aria-label="Stop timer">STOP</button>
+      <button id="btnReset" class="btn" aria-label="Reset timer">RESET</button>
     </div>
     
-    <div class="inputs">
-      <label>
+    <form class="inputs" onsubmit="return false;">
+      <label for="hoursInput">
         Hours
-        <input type="number" id="hoursInput" min="0" max="23" value="0">
+        <input type="number" id="hoursInput" min="0" max="23" value="0" aria-label="Hours">
       </label>
-      <label>
+      <label for="minutesInput">
         Minutes
-        <input type="number" id="minutesInput" min="0" max="59" value="0">
+        <input type="number" id="minutesInput" min="0" max="59" value="0" aria-label="Minutes">
       </label>
-      <label>
+      <label for="secondsInput">
         Seconds
-        <input type="number" id="secondsInput" min="0" max="59" value="5">
+        <input type="number" id="secondsInput" min="0" max="59" value="5" aria-label="Seconds">
       </label>
-    </div>
-  </div>
+    </form>
+  </main>
 
   <script>
     // Timer state
@@ -205,7 +228,9 @@
     const btnStop = document.getElementById('btnStop');
     const btnReset = document.getElementById('btnReset');
     
-    // Update the display with current time values
+    /**
+     * Update the display with current time values
+     */
     function updateDisplay() {
       const m = Math.floor(totalSeconds / 60);
       const s = totalSeconds % 60;
@@ -214,9 +239,15 @@
       
       // Also update document title for better UX
       document.title = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')} - Timer`;
+      
+      // Update ARIA attributes for accessibility
+      document.getElementById('timerDisplay').setAttribute('aria-label', 
+        `${m} minutes and ${s} seconds remaining`);
     }
     
-    // Set the timer based on input values
+    /**
+     * Set the timer based on input values
+     */
     function setTimer() {
       // Parse input values with validation
       const h = Math.max(0, Math.min(23, parseInt(hoursInput.value) || 0));
@@ -233,27 +264,67 @@
       updateDisplay();
     }
     
-    // Countdown function
+    /**
+     * Countdown function
+     */
     function countdown() {
       if (totalSeconds > 0) {
         totalSeconds--;
         updateDisplay();
       } else {
         stopTimer();
-        alert("Time's up!");
+        // Use a more accessible notification method
+        notifyTimerComplete();
       }
     }
     
-    // Start the timer
+    /**
+     * Notify when timer is complete
+     */
+    function notifyTimerComplete() {
+      // Create and append notification for screen readers
+      const notification = document.createElement('div');
+      notification.setAttribute('role', 'alert');
+      notification.textContent = "Time's up!";
+      notification.style.position = 'absolute';
+      notification.style.left = '-9999px';
+      document.body.appendChild(notification);
+      
+      // Show visual alert for sighted users
+      alert("Time's up!");
+      
+      // Remove notification after alert is dismissed
+      setTimeout(() => {
+        document.body.removeChild(notification);
+      }, 1000);
+    }
+    
+    /**
+     * Start the timer
+     */
     function startTimer() {
       if (!timerInterval && totalSeconds > 0) {
         timerInterval = setInterval(countdown, 1000);
         btnStart.disabled = true;
         btnStop.disabled = false;
+        
+        // Announce that timer has started
+        const announcement = document.createElement('div');
+        announcement.setAttribute('role', 'status');
+        announcement.textContent = "Timer started";
+        announcement.style.position = 'absolute';
+        announcement.style.left = '-9999px';
+        document.body.appendChild(announcement);
+        
+        setTimeout(() => {
+          document.body.removeChild(announcement);
+        }, 1000);
       }
     }
     
-    // Stop the timer
+    /**
+     * Stop the timer
+     */
     function stopTimer() {
       if (timerInterval) {
         clearInterval(timerInterval);
@@ -263,11 +334,12 @@
       }
     }
     
-    // Reset the timer
+    /**
+     * Reset the timer
+     */
     function resetTimer() {
       stopTimer();
-      totalSeconds = 0;
-      updateDisplay();
+      setTimer(); // Reset to input values instead of zero
     }
     
     // Event listeners
@@ -280,9 +352,47 @@
     minutesInput.addEventListener('change', setTimer);
     secondsInput.addEventListener('change', setTimer);
     
+    // Keyboard support for better accessibility
+    document.addEventListener('keydown', function(e) {
+      if (e.code === 'Space') {
+        if (timerInterval) {
+          stopTimer();
+        } else {
+          startTimer();
+        }
+        e.preventDefault();
+      } else if (e.code === 'KeyR') {
+        resetTimer();
+        e.preventDefault();
+      }
+    });
+    
     // Initial setup
     btnStop.disabled = true;
     updateDisplay();
+    
+    // Make sure timer works correctly when tab is not active
+    let lastTime = Date.now();
+    
+    window.addEventListener('visibilitychange', function() {
+      if (document.visibilityState === 'visible' && timerInterval) {
+        // Calculate missed time while tab was inactive
+        const now = Date.now();
+        const elapsed = Math.floor((now - lastTime) / 1000);
+        
+        if (elapsed > 0 && totalSeconds > 0) {
+          totalSeconds = Math.max(0, totalSeconds - elapsed);
+          updateDisplay();
+          
+          if (totalSeconds === 0) {
+            stopTimer();
+            notifyTimerComplete();
+          }
+        }
+      }
+      
+      lastTime = Date.now();
+    });
   </script>
 </body>
 </html>
